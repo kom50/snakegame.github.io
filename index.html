@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            padding: 0;
+            margin: 2px;
+            /* background-color: rgb(247, 14, 235); */
+            color: red;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            box-shadow: 0 0 5px gray;
+            /* border : 3px solid blue; */
+            margin: auto;
+            width: 96%;
+            height: 700px;
+        }
+
+        .container .item {
+            width: 90%;
+            height: 40px;
+            border: 1px solid rgb(140, 0, 255);
+            ;
+            margin-top: 10px;
+            text-align: center;
+            line-height: 40px;
+            font-size: 22px;
+            color: rgb(140, 0, 255);
+            font-weight: bold;
+            user-select: none;
+
+        }
+
+        .container .item:hover {
+            background-color: rgba(196, 181, 181, .2);
+            color: rgb(255, 0, 0);
+        }
+
+        .container .i1 {
+            height: 300px;
+            width: 300px;
+            line-height: 300px;
+            align-self: flex-stat;
+            position: relative;
+            border: 0px solid red;
+            font-size: 38px;
+            color: white;
+            top: -120px;
+            font-variant: small-caps;
+            font-weight: bold;
+            background-color: rgb(140, 0, 255);
+            background-image: linear-gradient(45deg,rgb(76, 0, 255),  rgb(255, 0, 149));
+            /* border-radius: 110px 120px 150px 90px; */
+            border-radius: 70% 30% 30% 70% / 60% 40% 60% 40%;
+            /* border:10px solid; */
+            /* border-image:linear-gradient(45deg,red,blue) 10; */
+        }
+        
+        .container .i1:hover {
+            background-color: rgb(140, 0, 255);
+            background-image: linear-gradient(45deg,rgba(76, 0, 255, .3),  rgb(255, 0, 149));
+            color : rgb(217, 255, 0);
+        }
+
+        .container .i4 {
+            position: absolute;
+            bottom: 20px;
+            font-variant: small-caps;
+        }
+
+        div a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body onload="login()">
+    <div class="container">
+        <div class='item i1'> <span>Snake Game </span>  </div>
+        <a class='item i2' href='SnakeUpdate.html'> Start Game </a>
+        <a class='item i3' href='#'> High Score </a>
+        <span class='i4'> <strong> </strong <span>
+    </div>
+
+    <script>
+        document.querySelector('.i3').addEventListener('click', (event) => {
+            let b = login();
+            if (b) {
+                document.querySelector('span strong').innerHTML = 'High Score : ' + getScore();
+                setTimeout(() => {
+                    document.querySelector('span strong').innerHTML = '';
+                }, 2000)
+            }
+        })
+
+        let anchors = document.querySelectorAll('.container a');
+        function login() {
+            let name = localStorage.getItem('name');
+            if (name == null) {
+                anchors.forEach(function (arr, i) {
+                    arr.style.display = 'none';
+                })
+
+                loginDialog();
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        function loginDialog() {
+            let documentFragment = document.createDocumentFragment();
+            let div = document.createElement('div');
+            div.id = 'dialog';
+            // document.body.style.backgroundColor = 'red';
+            Object.assign(div.style, {
+                backgroundColor: 'rgb(140, 0, 255)',
+                backgroundImage :  'linear-gradient(85deg, rgb(0, 110, 255),  rgb(255, 0, 149))',
+                height: '300px',
+                width: '300px',
+                position: 'absolute',
+                zIndex: '3',
+                top: '60%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                transition: 'all 0.3s linear',
+                display: 'flex',
+                'justify-content': 'center',
+                'align-items': 'center',
+                'flex-direction': 'column',
+                borderRadius: '70% 30% 30% 70% / 60% 40% 60% 40%',
+                // boxShadow: '0 0 5px 3px rgba(140, 0, 255, .6)',
+            })
+            let username = document.createElement('input');
+            username.type = 'text';
+            username.placeholder = 'Enter your name'
+            Object.assign(username.style, {
+                position: 'relative',
+                height: '25px',
+                'outline-style': 'none',
+                marginBottom: '10px',
+            })
+
+            let ok_btn = document.createElement('input');
+            ok_btn.type = 'button';
+            ok_btn.value = 'ok';
+
+            Object.assign(ok_btn.style, {
+                position: 'relative',
+                height: '40px',
+                borderColor: 'white',
+                width: '80px',
+                borderRadius: '10px 20px',
+                color: 'rgb(140, 0, 255)',
+                fontWeight: 'bold',
+                fontSize: ' 20px',
+                'font-variant': 'small-caps',
+
+            })
+            ok_btn.addEventListener('click', (event) => {
+                let value = username.value;
+                if (value == '') {
+                    alert('Please enter user name');
+                } else {
+                    localStorage.setItem('name', value);
+                    localStorage.setItem('high_score', 0);
+                    document.body.removeChild(div);
+
+                    // show buttons
+                    anchors.forEach(function (arr, i) {
+                    arr.style.display = 'block';
+                })
+                }
+                console.log('button clicked', typeof value);
+            })
+            div.appendChild(username)
+            div.appendChild(ok_btn);
+            documentFragment.appendChild(div);
+            document.body.appendChild(documentFragment);
+        }
+
+        function getScore() {
+            return localStorage.getItem('high_score');
+        }
+
+        function setScore(score) {
+            localStorage.setItem('high_score', score);
+        }
+    </script>
+</body>
+
+</html>
